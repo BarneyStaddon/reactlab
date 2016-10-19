@@ -1,0 +1,101 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>React Tutorial</title>
+        <script src="https://unpkg.com/react@15.3.2/dist/react.js"></script>
+        <script src="https://unpkg.com/react-dom@15.3.2/dist/react-dom.js"></script>
+        <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+        <script src="https://unpkg.com/jquery@3.1.0/dist/jquery.min.js"></script>
+        <script src="https://unpkg.com/remarkable@1.7.1/dist/remarkable.min.js"></script>
+    </head>
+    <body>
+        <div id="content"></div>
+        <!--<script type="text/babel" src="scripts/example.js"></script>-->
+        <script type="text/babel">
+
+        // tutorial8.js
+        var data = [
+          {id: 1, author: "Pete Hunt", text: "This is the first comment"},
+          {id: 2, author: "Jordan Walker", text: "This is *another* comment"}
+        ];
+        
+        // tutorial1.js
+
+        //N.B These aren't actually DOM div elements but are React components - Pieces of data that react knows how to handle
+        //returns a tree of React components
+        var CommentBox = React.createClass({
+            render: function() {
+              return (  
+                <div className="commentBox">  
+                    <h1>Comments</h1>
+                    <CommentList data={this.props.data} />
+                    <CommentForm />
+                </div>
+              );
+            }
+          });
+
+        // tutorial2.js
+        var CommentList = React.createClass({
+          render: function() {
+            var commentNodes = this.props.data.map(function(comment) {
+              return (
+                <Comment author={comment.author} key={comment.id}>
+                  {comment.text}
+                </Comment>
+              );
+            });
+
+
+            return (
+              <div className="commentList">
+                {commentNodes}
+              </div>
+            );
+          }
+        });
+
+        var CommentForm = React.createClass({
+          render: function() {
+            return (
+              <div className="commentForm">
+                Hello, world! I am a CommentForm.
+              </div>
+            );
+          }
+        });
+
+        // tutorial4.js
+        //we use the remarkable library here to convert raw markup into HTML
+        var Comment = React.createClass({
+
+            rawMarkup: function() {
+                var md = new Remarkable();
+                var rawMarkup = md.render(this.props.children.toString());
+                return { __html: rawMarkup };
+            },
+
+            render: function() {
+        
+                return (
+                    <div className="comment">
+                        <h2 className="commentAuthor">
+                        {this.props.author}
+                        </h2>
+                        <span dangerouslySetInnerHTML={this.rawMarkup()} />
+                    </div>
+            );
+          }
+        });
+        
+        //instantiates the root component, starts the framework, and injects the markup into a raw DOM element, provided as the second argument.
+        ReactDOM.render(
+            <CommentBox data={data} />,
+            document.getElementById('content')
+          );
+
+        </script>
+    </body>
+</html>
